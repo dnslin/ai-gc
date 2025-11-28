@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2025-11-28
 
 ### Added
+
 - Initial release
 - AI-powered commit message generation using OpenAI, Claude, Gemini
 - Conventional Commits format enforcement
@@ -19,10 +20,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive test coverage (95%+)
 
 ### Security
+
 - API keys stored securely using VS Code SecretStorage API
 - No plaintext credentials in settings.json
 
 ### Testing
+
 - Unit tests for all core services
 - Integration tests for key workflows
 - 95%+ code coverage across modules
+
+## [0.3.0] - 2025-11-28
+
+### Added
+
+- update logo

@@ -1,6 +1,6 @@
 # AI Git Commit
 
-[![VS Code](https://img.shields.io/visual-studio-marketplace/v/ai-gc.ai-git-commit)](https://marketplace.visualstudio.com/items?itemName=ai-gc.ai-git-commit)
+[![VS Code](https://img.shields.io/visual-studio-marketplace/v/aigc-dnslin.ariso-commit)](https://marketplace.visualstudio.com/items?itemName=aigc-dnslin.ariso-commit)
 
 AI Git Commit 是一个 VS Code 扩展，利用大语言模型（LLM）自动生成符合 [Conventional Commits](https://www.conventionalcommits.org/) 规范的 Git 提交信息。
 
