@@ -1,6 +1,6 @@
 {
   "name": "ariso-commit",
-  "displayName": "AGG-Commiter",
+  "displayName": "ariso-commit",
   "version": "0.3.0",
   "description": "Generate Git commit messages with AI assistance.",
   "publisher": "aigc-dnslin",
