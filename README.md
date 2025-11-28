@@ -1,7 +1,6 @@
 # AI Git Commit
 
 [![VS Code](https://img.shields.io/visual-studio-marketplace/v/ai-gc.ai-git-commit)](https://marketplace.visualstudio.com/items?itemName=ai-gc.ai-git-commit)
-[![Test Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)](./coverage)
 
 AI Git Commit 是一个 VS Code 扩展，利用大语言模型（LLM）自动生成符合 [Conventional Commits](https://www.conventionalcommits.org/) 规范的 Git 提交信息。
 
@@ -156,5 +155,5 @@ MIT
 
 欢迎提交 Issue 和 Pull Request！
 
-- Issue: [GitHub Issues](https://github.com/dnslin/ai-git-commit/issues)
-- PR: [GitHub Pull Requests](https://github.com/dnslin/ai-git-commit/pulls)
+- Issue: [GitHub Issues](https://github.com/dnslin/ai-gc/issues)
+- PR: [GitHub Pull Requests](https://github.com/dnslin/ai-gc/pulls)
