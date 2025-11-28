@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "description": "Generate Git commit messages with AI assistance.",
   "publisher": "dnslin",
+  "repository": "https://github.com/dnslin/ai-gc",
   "main": "./dist/extension.js",
   "engines": {
     "vscode": "^1.85.0"
