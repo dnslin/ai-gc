@@ -1,6 +1,6 @@
 {
   "name": "ariso-commit",
-  "displayName": "AI Git Commit Integrated open ai support for chinese and english.",
+  "displayName": "AGG-Commiter",
   "version": "0.1.0",
   "description": "Generate Git commit messages with AI assistance.",
   "publisher": "aigc-dnslin",
