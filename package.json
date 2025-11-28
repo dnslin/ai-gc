@@ -1,0 +1,99 @@
+{
+  "name": "ai-git-commit",
+  "displayName": "AI Git Commit",
+  "version": "0.1.0",
+  "description": "Generate Git commit messages with AI assistance.",
+  "publisher": "ai-gc",
+  "main": "./dist/extension.js",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "aiCommit.generate",
+        "title": "AI: 生成 Git 提交信息",
+        "icon": "$(sparkle)"
+      }
+    ],
+    "menus": {
+      "scm/title": [
+        {
+          "command": "aiCommit.generate",
+          "group": "navigation",
+          "when": "scmProvider == git"
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "AI Git Commit",
+      "properties": {
+        "aiCommit.provider": {
+          "type": "string",
+          "enum": [
+            "openai",
+            "claude",
+            "gemini",
+            "custom"
+          ],
+          "default": "openai",
+          "description": "AI provider to use for commit message generation."
+        },
+        "aiCommit.baseUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Custom API base URL."
+        },
+        "aiCommit.model": {
+          "type": "string",
+          "default": "",
+          "description": "Model name for the selected provider."
+        },
+        "aiCommit.language": {
+          "type": "string",
+          "enum": [
+            "English",
+            "Chinese"
+          ],
+          "default": "English",
+          "description": "Language of generated commit messages."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "node ./esbuild.js",
+    "watch": "node ./esbuild.js --watch",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint \"src/**/*.ts\"",
+    "package": "pnpm run compile && vsce package",
+    "vscode:package": "pnpm vsce package --no-dependencies"
+  },
+  "dependencies": {
+    "axios": "^1.6.8"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "6",
+    "@typescript-eslint/parser": "6",
+    "@typescript-eslint/typescript-estree": "^6.21.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "@vscode/vsce": "^3.7.1",
+    "esbuild": "^0.19.11",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.6.0",
+    "vsce": "^2.15.0"
+  }
+}
