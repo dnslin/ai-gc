@@ -1,9 +1,9 @@
 {
-  "name": "ai-gc",
-  "displayName": "AI Git Commit",
+  "name": "ariso-commit",
+  "displayName": "AI Git Commit Integrated open ai support for chinese and english.",
   "version": "0.1.0",
   "description": "Generate Git commit messages with AI assistance.",
-  "publisher": "dnslin",
+  "publisher": "aigc-dnslin",
   "repository": "https://github.com/dnslin/ai-gc",
   "main": "./dist/extension.js",
   "engines": {
