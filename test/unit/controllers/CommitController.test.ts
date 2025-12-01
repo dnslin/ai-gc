@@ -57,7 +57,7 @@ describe('CommitController', () => {
         model: 'gpt-4',
         language: 'English',
       }),
-      getApiKey: vi.fn().mockResolvedValue('test-api-key'),
+      ensureApiKey: vi.fn().mockResolvedValue('test-api-key'),
     } as unknown as ConfigManager;
 
     controller = new CommitController(mockGitService, mockConfigManager);
@@ -69,7 +69,7 @@ describe('CommitController', () => {
 
       expect(mockGitService.getUnstagedDiff).toHaveBeenCalled();
       expect(mockConfigManager.getConfig).toHaveBeenCalled();
-      expect(mockConfigManager.getApiKey).toHaveBeenCalled();
+      expect(mockConfigManager.ensureApiKey).toHaveBeenCalled();
       expect(mockGitService.setCommitMessage).toHaveBeenCalledWith('feat(test): add test feature');
       expect(vscode.window.showInformationMessage).toHaveBeenCalledWith('提交信息已生成');
     });

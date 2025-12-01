@@ -7,7 +7,10 @@ vi.mock('vscode', () => ({
     getConfiguration: vi.fn(),
   },
   window: {
-    showInputBox: vi.fn(),
+    showWarningMessage: vi.fn(),
+  },
+  commands: {
+    executeCommand: vi.fn(),
   },
 }));
 
@@ -75,7 +78,7 @@ describe('ConfigManager', () => {
   });
 
   describe('getApiKey', () => {
-    it('should return existing API key', async () => {
+    it('should return existing API key from secrets', async () => {
       vi.mocked(mockContext.secrets.get).mockResolvedValue('existing-key');
 
       const manager = new ConfigManager(mockContext);
@@ -83,31 +86,86 @@ describe('ConfigManager', () => {
 
       expect(key).toBe('existing-key');
       expect(mockContext.secrets.get).toHaveBeenCalledWith('aiCommit.openai.apiKey');
+      expect(vscode.workspace.getConfiguration).not.toHaveBeenCalled();
     });
 
-    it('should prompt for new API key if not exists', async () => {
+    it('should fall back to settings and sync to secrets', async () => {
       vi.mocked(mockContext.secrets.get).mockResolvedValue(undefined);
-      vi.mocked(vscode.window.showInputBox).mockResolvedValue('new-key');
+      const configGet = vi.fn().mockReturnValue('settings-key');
+      vi.mocked(vscode.workspace.getConfiguration).mockReturnValue({
+        get: configGet,
+      } as any);
 
       const manager = new ConfigManager(mockContext);
       const key = await manager.getApiKey('openai');
 
-      expect(key).toBe('new-key');
-      expect(vscode.window.showInputBox).toHaveBeenCalledWith({
-        prompt: expect.stringContaining('openai'),
-        password: true,
-        ignoreFocusOut: true,
-      });
-      expect(mockContext.secrets.store).toHaveBeenCalledWith('aiCommit.openai.apiKey', 'new-key');
+      expect(key).toBe('settings-key');
+      expect(configGet).toHaveBeenCalledWith('openai.apiKey', '');
+      expect(mockContext.secrets.store).toHaveBeenCalledWith('aiCommit.openai.apiKey', 'settings-key');
     });
 
-    it('should throw if user cancels input', async () => {
+    it('should return empty string when no key found', async () => {
       vi.mocked(mockContext.secrets.get).mockResolvedValue(undefined);
-      vi.mocked(vscode.window.showInputBox).mockResolvedValue(undefined);
+      const configGet = vi.fn().mockReturnValue('');
+      vi.mocked(vscode.workspace.getConfiguration).mockReturnValue({
+        get: configGet,
+      } as any);
 
       const manager = new ConfigManager(mockContext);
+      const key = await manager.getApiKey('openai');
 
-      await expect(manager.getApiKey('openai')).rejects.toThrow('API Key is required');
+      expect(key).toBe('');
+      expect(configGet).toHaveBeenCalledWith('openai.apiKey', '');
+      expect(mockContext.secrets.store).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('ensureApiKey', () => {
+    it('should return key when available', async () => {
+      vi.mocked(mockContext.secrets.get).mockResolvedValue('existing-key');
+
+      const manager = new ConfigManager(mockContext);
+      const key = await manager.ensureApiKey('openai');
+
+      expect(key).toBe('existing-key');
+      expect(vscode.window.showWarningMessage).not.toHaveBeenCalled();
+    });
+
+    it('should show warning and return null when key missing', async () => {
+      vi.mocked(mockContext.secrets.get).mockResolvedValue(undefined);
+      const configGet = vi.fn().mockReturnValue('');
+      vi.mocked(vscode.workspace.getConfiguration).mockReturnValue({
+        get: configGet,
+      } as any);
+      vi.mocked(vscode.window.showWarningMessage).mockResolvedValue(undefined);
+
+      const manager = new ConfigManager(mockContext);
+      const key = await manager.ensureApiKey('openai');
+
+      expect(key).toBeNull();
+      expect(vscode.window.showWarningMessage).toHaveBeenCalledWith(
+        'openai API Key 未配置，请前往设置',
+        '打开设置'
+      );
+      expect(vscode.commands.executeCommand).not.toHaveBeenCalled();
+    });
+
+    it('should open settings when user selects action', async () => {
+      vi.mocked(mockContext.secrets.get).mockResolvedValue(undefined);
+      const configGet = vi.fn().mockReturnValue('');
+      vi.mocked(vscode.workspace.getConfiguration).mockReturnValue({
+        get: configGet,
+      } as any);
+      vi.mocked(vscode.window.showWarningMessage).mockResolvedValue('打开设置');
+
+      const manager = new ConfigManager(mockContext);
+      const key = await manager.ensureApiKey('openai');
+
+      expect(key).toBeNull();
+      expect(vscode.commands.executeCommand).toHaveBeenCalledWith(
+        'workbench.action.openSettings',
+        'aiCommit.openai.apiKey'
+      );
     });
   });
 });

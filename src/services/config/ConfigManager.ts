@@ -21,22 +21,46 @@ export class ConfigManager {
   }
 
   async getApiKey(provider: string): Promise<string> {
-    const key = await this.context.secrets.get(`aiCommit.${provider}.apiKey`);
-    if (!key) {
-      const input = await vscode.window.showInputBox({
-        prompt: `请输入 ${provider} 的 API Key`,
-        password: true,
-        ignoreFocusOut: true,
-      });
-
-      if (!input) {
-        throw new Error('API Key is required');
-      }
-
-      await this.context.secrets.store(`aiCommit.${provider}.apiKey`, input);
-      return input;
+    // 优先级 1: Secrets API(向后兼容)
+    const secretKey = await this.context.secrets.get(`aiCommit.${provider}.apiKey`);
+    if (secretKey) {
+      return secretKey;
     }
-    return key;
+
+    // 优先级 2: Settings UI
+    const settingsKey = vscode.workspace
+      .getConfiguration('aiCommit')
+      .get<string>(`${provider}.apiKey`, '');
+
+    if (settingsKey) {
+      // 同步写入 Secrets 保持加密
+      await this.context.secrets.store(`aiCommit.${provider}.apiKey`, settingsKey);
+      return settingsKey;
+    }
+
+    // 优先级 3: 返回空触发通知
+    return '';
+  }
+
+  async ensureApiKey(provider: string): Promise<string | null> {
+    const key = await this.getApiKey(provider);
+    if (key) {
+      return key;
+    }
+
+    const action = await vscode.window.showWarningMessage(
+      `${provider} API Key 未配置，请前往设置`,
+      '打开设置'
+    );
+
+    if (action === '打开设置') {
+      await vscode.commands.executeCommand(
+        'workbench.action.openSettings',
+        `aiCommit.${provider}.apiKey`
+      );
+    }
+
+    return null;
   }
 
   private getDefaultModel(provider: Provider): string {

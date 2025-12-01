@@ -11,7 +11,7 @@ AI Git Commit 是一个 VS Code 扩展，利用大语言模型（LLM）自动生
 - 🌐 **多语言支持**: 支持英文和中文提交信息，技术术语始终保持英文
 - 🤖 **多 Provider 支持**: OpenAI、Claude、Gemini 以及自定义 API
 - ⚡ **智能截断**: 自动处理大型 diff，避免 Token 溢出
-- 🔐 **安全存储**: 使用 VS Code SecretStorage 加密存储 API Key
+- 🔐 **安全存储**: 使用 VS Code SecretStorage 加密存储 API Key + Settings UI 便捷管理
 
 ## 使用方式
 
@@ -19,26 +19,43 @@ AI Git Commit 是一个 VS Code 扩展，利用大语言模型（LLM）自动生
 
 从 VS Code Marketplace 搜索并安装 `AI Git Commit`。
 
-### 2. 配置
+### 2. 配置 AI Provider
 
-在 VS Code 设置中配置以下选项：
+在 VS Code 设置中配置以下选项:
 
 ```json
 {
   "aiCommit.provider": "openai", // 选择 Provider: openai | claude | gemini | custom
-  "aiCommit.model": "gpt-4", // 模型名称（可选，默认使用推荐模型）
-  "aiCommit.baseUrl": "", // 自定义 API 地址（可选）
+  "aiCommit.model": "gpt-4", // 模型名称(可选,默认使用推荐模型)
+  "aiCommit.baseUrl": "", // 自定义 API 地址(可选)
   "aiCommit.language": "English" // 语言: English | Chinese
 }
 ```
 
 ### 3. 配置 API Key
 
-首次使用时，扩展会提示输入 API Key。也可以通过命令面板手动配置：
+**方式一:VS Code Settings UI(推荐)**
 
-1. 打开命令面板 (`Ctrl+Shift+P` / `Cmd+Shift+P`)
-2. 执行 `AI: 生成 Git 提交信息`
-3. 按提示输入 API Key
+1. 打开 VS Code 设置(`Ctrl+,` / `Cmd+,`)
+2. 搜索 `aiCommit.apiKey`
+3. 根据使用的 Provider 填入对应的 API Key:
+   - `aiCommit.openai.apiKey`: OpenAI API Key
+   - `aiCommit.claude.apiKey`: Claude API Key
+   - `aiCommit.gemini.apiKey`: Gemini API Key
+   - `aiCommit.custom.apiKey`: 自定义 API Key
+
+**方式二:自动提示**
+
+首次使用时,如果检测到 API Key 未配置,扩展会显示通知并提供跳转到设置的按钮。
+
+**安全提示**
+- ⚠️ API Key 会同步加密存储到 VS Code Secrets
+- ⚠️ 不要将 workspace settings.json 提交到版本控制系统
+- ⚠️ 建议在 User Settings 而非 Workspace Settings 中配置
+
+**已有用户升级说明**
+
+如果你之前已通过弹窗配置过 API Key,扩展会自动迁移到 Settings UI,无需重新输入。
 
 ### 4. 生成提交信息
 

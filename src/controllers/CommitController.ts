@@ -30,7 +30,11 @@ export class CommitController {
 
       // 3. 获取配置
       const config = this.configManager.getConfig();
-      const apiKey = await this.configManager.getApiKey(config.provider);
+      const apiKey = await this.configManager.ensureApiKey(config.provider);
+
+      if (!apiKey) {
+        return; // 静默返回,用户已看到通知
+      }
 
       Logger.info(`Using provider: ${config.provider}, model: ${config.model}`);
 

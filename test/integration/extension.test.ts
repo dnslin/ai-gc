@@ -24,6 +24,7 @@ vi.mock('vscode', async () => {
     workspace: {
       getConfiguration: vi.fn(() => ({
         get: vi.fn((key, defaultValue) => defaultValue),
+        update: vi.fn().mockResolvedValue(undefined),
       })),
     },
     extensions: {
@@ -40,6 +41,11 @@ vi.mock('vscode', async () => {
           })),
         },
       })),
+    },
+    ConfigurationTarget: {
+      Global: 1,
+      Workspace: 2,
+      WorkspaceFolder: 3,
     },
     ProgressLocation: {
       Notification: 15,
@@ -58,6 +64,10 @@ describe('Extension E2E', () => {
       secrets: {
         get: vi.fn().mockResolvedValue('test-api-key'),
         store: vi.fn(),
+      },
+      globalState: {
+        get: vi.fn().mockReturnValue(false),
+        update: vi.fn(),
       },
     } as unknown as vscode.ExtensionContext;
   });
